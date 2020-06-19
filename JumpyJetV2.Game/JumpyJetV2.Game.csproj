@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>JumpyJetV2</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Cognitio.ConvNetSharp.Core" Version="0.4.14" />
+    <PackageReference Include="Cognitio.ConvNetSharp.Volume.GPU" Version="0.4.14" />
+    <PackageReference Include="Stride.Core" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" IncludeAssets="build" />
+    <PackageReference Include="Stride.Engine" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Particles" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Physics" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.UI" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" />
+  </ItemGroup>
+  <!--<ItemGroup>
+    <Reference Include="ConvNetSharp.Core">
+      <HintPath>..\..\..\..\source\repos\ConvNetSharp\src\ConvNetSharp.Core\bin\Release\netstandard2.1\ConvNetSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ConvNetSharp.Volume">
+      <HintPath>..\..\..\..\source\repos\ConvNetSharp\src\ConvNetSharp.Core\bin\Release\netstandard2.1\ConvNetSharp.Volume.dll</HintPath>
+    </Reference>
+  </ItemGroup> -->
+</Project>

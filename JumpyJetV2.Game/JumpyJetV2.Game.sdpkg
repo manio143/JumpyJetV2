@@ -1,0 +1,18 @@
+!Package
+SerializedVersion: {Assets: 3.1.0.0}
+Meta:
+    Name: JumpyJetV2.Game
+    Version: 1.0.0
+    Authors: []
+    Owners: []
+    Dependencies: null
+AssetFolders:
+    -   Path: !dir ../Assets/Shared
+    -   Path: !dir Effects
+ResourceFolders: []
+OutputGroupDirectories: {}
+ExplicitFolders: []
+Bundles: []
+TemplateFolders: []
+RootAssets:
+    - c752b593-c6c0-43af-8d3d-b4a9765c861a:Pipe Set
