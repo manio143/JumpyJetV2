@@ -118,11 +118,8 @@ namespace JumpyJetV2
             Entity pipeSet = pipeSets[0];
 
             for (var i = 0; i < pipeSets.Count; ++i)
-                if (pipeSets[i].Transform.Position.X < -1.5f)
-                {
-                    if (i == pipeSets.Count - 1) Debugger.Break();
-                    pipeSet = pipeSets[i+1]; //select next
-                }
+                if (pipeSets[i].Transform.Position.X > -3.2f && pipeSets[i].Transform.Position.X < pipeSet.Transform.Position.X)
+                    pipeSet = pipeSets[i];
 
             distanceToNext = pipeSet.Transform.Position.X;
             pipeHeight = pipeSet.Transform.Position.Y;

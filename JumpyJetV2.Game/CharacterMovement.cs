@@ -6,10 +6,10 @@ namespace JumpyJetV2
 {
     public class CharacterMovement : SyncScript
     {
-        private static readonly Vector2 Gravity = new Vector2(0, -17);
+        internal static readonly Vector2 Gravity = new Vector2(0, -17);
         private static readonly Vector2 StartPos = new Vector2(-1, 0);
         private static readonly Vector2 StartVelocity = new Vector2(0, 7);
-        private static readonly Vector2 JumpVelocity = new Vector2(0, 6.5f);
+        internal static readonly Vector2 JumpVelocity = new Vector2(0, 6.5f);
         private static readonly Vector2 JumpAboveLimitVelocity = new Vector2(0, 2);
         private static readonly Vector2 DeathVelocity = new Vector2(0, 1);
         

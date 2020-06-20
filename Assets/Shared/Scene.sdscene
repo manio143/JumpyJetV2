@@ -64,8 +64,9 @@ Hierarchy:
                     067395a11aae3b4c4a7229eef1bd74bc: !JumpyJetV2.InputController,JumpyJetV2.Game
                         Id: 45dd23a1-e60f-4a4d-b51f-57f62e6e53b0
                         character: ref!! 2cd31f96-e7bf-4a49-ae59-5c7bd14933d9
-                        input: !JumpyJetV2.PlayerInput,JumpyJetV2.Game
-                            controller: ref!! 45dd23a1-e60f-4a4d-b51f-57f62e6e53b0
+                        input: !JumpyJetV2.AIInput,JumpyJetV2.Game
+                            characterScript: ref!! 2cd31f96-e7bf-4a49-ae59-5c7bd14933d9
+                            pipesScript: ref!! a3abb282-de05-4800-b279-e562372a4185
         -   Entity:
                 Id: ab6a210f-cea3-4f03-8b5d-af95e4a4fb44
                 Name: BackgroundScript

@@ -6,6 +6,7 @@ using Stride.Engine.Events;
 using Stride.Physics;
 using DIExtensions;
 using Stride.Core;
+using Stride.Core.Mathematics;
 
 namespace JumpyJetV2
 {
@@ -115,7 +116,7 @@ namespace JumpyJetV2
             {
                 await Script.NextFrame();
 
-                //DebugText.Print($"Position: {Entity.Transform.Position}\nVelocity: {physicsComponent.LinearVelocity}", new Int2(20, 300));
+                DebugText.Print($"Position: {Entity.Transform.Position}\nVelocity: {physicsComponent.LinearVelocity}", new Int2(20, 300));
 
                 ListenForPausedEvent();
                 ListenForStartEvent();
