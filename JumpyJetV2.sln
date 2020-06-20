@@ -1,3 +1,4 @@
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.0.0
@@ -7,6 +8,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JumpyJetV2.Game", "JumpyJetV2.Game\JumpyJetV2.Game.csproj", "{36A90FF9-D5D6-4A28-9C02-51B591CF2B55}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JumpyJetV2.Linux", "JumpyJetV2.Linux\JumpyJetV2.Linux.csproj", "{ABA7EEEE-F277-45E1-8500-E03D4468C18C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DIExtensions", "DIExtensions\DIExtensions.csproj", "{1404B32E-1416-494C-8673-4BB3D1540BEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +29,10 @@ Global
 		{ABA7EEEE-F277-45E1-8500-E03D4468C18C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABA7EEEE-F277-45E1-8500-E03D4468C18C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABA7EEEE-F277-45E1-8500-E03D4468C18C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1404B32E-1416-494C-8673-4BB3D1540BEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1404B32E-1416-494C-8673-4BB3D1540BEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1404B32E-1416-494C-8673-4BB3D1540BEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1404B32E-1416-494C-8673-4BB3D1540BEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

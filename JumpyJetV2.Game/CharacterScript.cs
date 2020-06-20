@@ -1,12 +1,11 @@
 // Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
-using System;
 using System.Threading.Tasks;
-using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Engine.Events;
 using Stride.Physics;
-using Stride.Rendering.Sprites;
+using DIExtensions;
+using Stride.Core;
 
 namespace JumpyJetV2
 {
@@ -21,38 +20,23 @@ namespace JumpyJetV2
         private EventReceiver<GlobalEvents.StartReason> gameStartedListener =
             new EventReceiver<GlobalEvents.StartReason>(GlobalEvents.GameStarted);
 
-        private static readonly Vector2 Gravity = new Vector2(0, -17);
-        private static readonly Vector2 StartPos = new Vector2(-1, 0);
-        private static readonly Vector2 StartVelocity = new Vector2(0, 7);
-
-        // magic number that matches the window resolution
-        private const float TopLimit = (568 - 200) * GameGlobals.GamePixelToUnitScale;
-
-        private const float NormalVelocityY = 6.5f;
-        private const float DeathVelocityY = 1f;
-        private const float VelocityAboveTopLimit = 2f;
-        private const int FlyingSpriteFrameIndex = 1;
-        private const int FallingSpriteFrameIndex = 0;
-        private const int DeathSpriteFrameIndex = 3;
-
-        private bool isRunning;
+        [DataMemberIgnore]
+        public bool isRunning;
         private bool isDying;
-        internal Vector2 velocity;
-        internal Vector2 position;
-        private float rotation;
 
-        private SpriteFromSheet spriteProvider;
-        private GameInput gameInput;
+        [EntityComponent]
+        [DataMemberIgnore]
+        public CharacterMovement Movement = null;
+
+        [EntityComponent]
+        private CharacterAnimation Animation = null;
+
+        [EntityComponent]
+        private RigidbodyComponent physicsComponent = null;
 
         public void Start()
         {
-            spriteProvider = Entity.Get<SpriteComponent>().SpriteProvider as SpriteFromSheet;
-            gameInput = Entity.Get<GameInput>();
-
-            if (spriteProvider == null)
-                throw new ArgumentNullException(nameof(spriteProvider), "This script requires a SpriteComponent.");
-            if (gameInput == null)
-                throw new ArgumentNullException(nameof(gameInput), "This script requires a GameInput component.");
+            this.InjectEntityComponents();
 
             Reset();
 
@@ -65,16 +49,11 @@ namespace JumpyJetV2
         /// </summary>
         public void Reset()
         {
-            position = StartPos;
-            velocity = StartVelocity;
-            rotation = 0;
-
-            UpdateTransformation();
+            Movement.Reset();
+            Animation.Reset();
 
             isRunning = false;
             isDying = false;
-
-            spriteProvider.CurrentFrame = FallingSpriteFrameIndex;
         }
 
         /// <summary>
@@ -82,8 +61,6 @@ namespace JumpyJetV2
         /// </summary>
         public async Task CountPassedPipes()
         {
-            var physicsComponent = Entity.Components.Get<PhysicsComponent>();
-
             while (Game.IsRunning)
             {
                 var collision = await physicsComponent.CollisionEnded();
@@ -102,8 +79,6 @@ namespace JumpyJetV2
         /// </summary>
         public async Task DetectGameOver()
         {
-            var physicsComponent = Entity.Components.Get<PhysicsComponent>();
-
             while (Game.IsRunning)
             {
                 await Script.NextFrame();
@@ -123,8 +98,9 @@ namespace JumpyJetV2
         private async Task AnimateDeath()
         {
             isDying = true;
-            velocity.Y = DeathVelocityY;
-            while (position.Y > -TopLimit * 1.2)
+            Animation.isDying = true;
+            Movement.DieJump();
+            while (!Movement.IsOutOfBounds())
                 await Script.NextFrame(); // wait for Jumpy to fall off screen
         }
 
@@ -139,34 +115,28 @@ namespace JumpyJetV2
             {
                 await Script.NextFrame();
 
+                //DebugText.Print($"Position: {Entity.Transform.Position}\nVelocity: {physicsComponent.LinearVelocity}", new Int2(20, 300));
+
                 ListenForPausedEvent();
                 ListenForStartEvent();
 
-                gameInput.Enabled = isRunning;
-
-                if (!isRunning)
-                    continue;
-
-                var elapsedTime = (float)Game.UpdateTime.Elapsed.TotalSeconds;
-                ProcessMovement(elapsedTime);
-
-                // update animation and rotation value
-                UpdateAgentAnimation();
-
-                // update the position/rotation
-                UpdateTransformation();
+                if (isRunning)
+                {
+                    Movement.Enabled = true;
+                    Animation.Enabled = true;
+                }
+                else
+                {
+                    Movement.Enabled = false;
+                    Animation.Enabled = false;
+                }
             }
         }
 
-        private void ProcessMovement(float elapsedTime)
+        public void Jump()
         {
-            // apply impulse on the touch/space
-            if (!isDying && gameInput.IsJumping)
-                velocity.Y = position.Y > TopLimit ? VelocityAboveTopLimit : NormalVelocityY;
-
-            // update position/velocity
-            velocity += Gravity * elapsedTime;
-            position += velocity * elapsedTime;
+            if (isRunning && !isDying)
+                Movement.Jump();
         }
 
         private void ListenForStartEvent()
@@ -203,27 +173,6 @@ namespace JumpyJetV2
                         break;
                 }
             }
-        }
-
-        private void UpdateTransformation()
-        {
-            Entity.Transform.Position = new Vector3(position.X, position.Y, 0.1f);
-            Entity.Transform.RotationEulerXYZ = new Vector3(0, 0, rotation);
-        }
-
-        private void UpdateAgentAnimation()
-        {
-            var isFalling = velocity.Y < 0;
-            var rotationSign = isFalling ? -1 : 1;
-
-            spriteProvider.CurrentFrame = 
-                isDying ? DeathSpriteFrameIndex :
-                isFalling ? FallingSpriteFrameIndex : FlyingSpriteFrameIndex;
-
-            // Rotate a sprite
-            rotation += rotationSign * MathUtil.Pi * 0.01f;
-            if (rotationSign * rotation > Math.PI / 10f)
-                rotation = rotationSign * MathUtil.Pi / 10f;
         }
     }
 }

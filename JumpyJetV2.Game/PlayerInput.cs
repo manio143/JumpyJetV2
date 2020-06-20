@@ -1,29 +1,21 @@
-﻿using Stride.Input;
+﻿using Stride.Core;
+using Stride.Engine;
+using Stride.Input;
 using System.Linq;
 
 namespace JumpyJetV2
 {
-    public class PlayerInput : GameInput
+    [DataContract]
+    public class PlayerInput : IGameInput
     {
-        private bool jumpingButtonPressed;
+        [DataMemberIgnore]
+        public bool Jumped => controller.Input.IsKeyPressed(Keys.Space) || UserTappedScreen();
 
-        public override bool Enabled { get; set ; }
-        public override bool IsJumping => jumpingButtonPressed;
-
-        public override void Update()
-        {
-            if (Enabled)
-            {
-                if (Input.IsKeyPressed(Keys.Space) || UserTappedScreen())
-                    jumpingButtonPressed = true;
-                else
-                    jumpingButtonPressed = false;
-            }
-        }
+        public InputController controller;
 
         private bool UserTappedScreen()
         {
-            return Input.PointerEvents.Any(pointerEvent => pointerEvent.EventType == PointerEventType.Pressed);
+            return controller.Input.PointerEvents.Any(pointerEvent => pointerEvent.EventType == PointerEventType.Pressed);
         }
     }
 }

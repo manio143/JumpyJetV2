@@ -11,6 +11,7 @@ Hierarchy:
         - ref!! d87ce433-90b0-4819-8f55-9d08330b581d
         - ref!! ab6a210f-cea3-4f03-8b5d-af95e4a4fb44
         - ref!! 47550ad3-4887-4173-95e0-d98048465edd
+        - ref!! 742fc053-f9ff-4f5b-8c49-3a291d8ac007
     Parts:
         -   Entity:
                 Id: 47550ad3-4887-4173-95e0-d98048465edd
@@ -50,6 +51,21 @@ Hierarchy:
                         NearClipPlane: 1.0
                         AspectRatio: 0.56338
                         Slot: 3fdcf6a2-9504-426d-a9f6-d682e7cdac79
+        -   Entity:
+                Id: 742fc053-f9ff-4f5b-8c49-3a291d8ac007
+                Name: InputController
+                Components:
+                    3ff353c61032f5c77f563abdf66f4523: !TransformComponent
+                        Id: 9cb227e7-0007-406e-a4f4-7ead4d55e5ab
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    067395a11aae3b4c4a7229eef1bd74bc: !JumpyJetV2.InputController,JumpyJetV2.Game
+                        Id: 45dd23a1-e60f-4a4d-b51f-57f62e6e53b0
+                        character: ref!! 2cd31f96-e7bf-4a49-ae59-5c7bd14933d9
+                        input: !JumpyJetV2.PlayerInput,JumpyJetV2.Game
+                            controller: ref!! 45dd23a1-e60f-4a4d-b51f-57f62e6e53b0
         -   Entity:
                 Id: ab6a210f-cea3-4f03-8b5d-af95e4a4fb44
                 Name: BackgroundScript
@@ -114,12 +130,12 @@ Hierarchy:
                         RollingFriction: 0.0
                         CcdMotionThreshold: 0.0
                         CcdSweptSphereRadius: 0.0
-                        IsTrigger: true
-                        IsKinematic: true
-                        Mass: 1.0
+                        IsTrigger*: true
+                        IsKinematic*: true
+                        Mass*: 500.0
                         LinearDamping: 0.0
                         AngularDamping: 0.0
-                        OverrideGravity: false
+                        OverrideGravity*: false
                         Gravity: {X: 0.0, Y: 0.0, Z: 0.0}
                         NodeName: null
                         ColliderShapes:
@@ -141,8 +157,11 @@ Hierarchy:
                                 Radius: 0.22
                                 LocalOffset: {X: 0.0, Y: 0.09, Z: 0.0}
                                 LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                    2bbc5c49f323c491c0a3af79c925120a*: !JumpyJetV2.AIInput,JumpyJetV2.Game
-                        Id: 21c8df38-6229-445f-a3c4-9602deb2cd94
+                    d35e98c07e662060bf2fe915c8c6c2d0*: !JumpyJetV2.CharacterMovement,JumpyJetV2.Game
+                        Id: 09304397-1a13-49ee-9460-28d6a8f6a626
+                        Enabled: false
+                    cdbd58dbac8662deb3ccc6bf62f61f9e*: !JumpyJetV2.CharacterAnimation,JumpyJetV2.Game
+                        Id: 50e70b92-785a-4f0b-8f53-6893b7616427
                         Enabled: false
             Base:
                 BasePartAsset: 4a25830a-8aee-445d-a581-6353da4eead4:Character

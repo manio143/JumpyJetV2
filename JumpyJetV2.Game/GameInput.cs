@@ -1,10 +1,7 @@
-﻿using Stride.Engine;
-
-namespace JumpyJetV2
+﻿namespace JumpyJetV2
 {
-    public abstract class GameInput : SyncScript
+    public interface IGameInput
     {
-        public virtual bool Enabled { get; set; }
-        public virtual bool IsJumping { get; }
+        bool Jumped { get; }
     }
 }
