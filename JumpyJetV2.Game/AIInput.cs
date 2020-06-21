@@ -1,5 +1,6 @@
 ﻿using Stride.Core;
 using Stride.Core.Mathematics;
+using Stride.Engine;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -30,32 +31,32 @@ namespace JumpyJetV2
             }
         }
 
-        private const float SimTime = 0.835f;
-        private const int StepSamples = 10;
-        private const float StepSize = SimTime/StepSamples;
         private bool ShouldJump(in GameState gameState)
         {
-            var noJump = Simulate(in gameState, new int[] { });
-            var jumpNow = Simulate(in gameState, new[] { 0 });
-            var jumpNext = Simulate(in gameState, new[] { 1 });
-            var noJumpNext = Simulate(in noJump[0], new int[] { });
+            var t = 0.12f;
+            var p = gameState.playerPos;
+            var vNo = gameState.playerVel;
+            var dist = gameState.pipeDistance;
+            var height = gameState.pipeHeight;
+            
+            var jumpScore = ScorePath(t, p, CharacterMovement.JumpVelocity.Y, dist, height);
+            var noJumpScore = ScorePath(t, p, vNo, dist, height);
 
-            var noJumpDies = Dies(noJump);
-            var jumpNowDies = Dies(jumpNow);
-            var jumpNextDies = Dies(jumpNext);
-            var noJumpNextDies = Dies(noJumpNext);
+            Debug.WriteLine((jumpScore, noJumpScore));
 
-            Debug.WriteLine((noJumpDies, jumpNowDies, jumpNextDies, noJumpNextDies));
-
-            if (jumpNowDies)
-                return false;
-            if (jumpNextDies && noJumpNextDies)
-                return true;
-            else
-                return noJumpDies;
+            return jumpScore > noJumpScore;
         }
 
-        private const float CharacterBoxLength = 0.85f;
+        private const float CharacterBoxLength = 0.7f;
+        private bool Dies(float pos, float v, float dist, float height)
+        {
+            var state = new GameState();
+            state.playerPos = pos;
+            state.playerVel = v;
+            state.pipeDistance = dist;
+            state.pipeHeight = height;
+            return Dies(new[] { state });
+        }
         private bool Dies(GameState[] states)
         {
             foreach(var state in states)
@@ -80,34 +81,32 @@ namespace JumpyJetV2
             return false;
         }
 
-        private GameState[] Simulate(in GameState initialState, int[] jumpAtSteps)
+        private int ScorePath(float t, float pos, float v0, float dist, float height)
         {
-            var v = initialState.playerVel;
-            var s = initialState.playerPos;
-            var ps = initialState.pipeDistance;
-            var pv = GameGlobals.PipeScrollSpeed;
+            var (dies, (np, nv, nd)) = SimulateStep(t, pos, v0, dist, height);
+
+            if (dies)
+                return 0;
+            if (nd < -3)
+                return 1;
+
+            var jumpScore = ScorePath(t, np, CharacterMovement.JumpVelocity.Y, nd, height);
+            var noJumpScore = ScorePath(t, np, nv, nd, height);
+
+            return jumpScore + noJumpScore;
+        }
+
+        private (bool, (float, float,float)) SimulateStep(float t, float pos, float v, float dist, float height)
+        {
             var a = CharacterMovement.Gravity.Y;
-            var t = StepSize;
-
-            var simLength = jumpAtSteps.Length > 0 ? StepSamples : StepSamples / 2;
-            GameState[] sim = new GameState[simLength];
-
-            for (int i = 0; i < simLength; i++)
-            {
-                if(jumpAtSteps.Contains(i))
-                    v = CharacterMovement.JumpVelocity.Y;
-                
-                s += v * t + (a * t * t) / 2;
-                v += a * t;
-                ps += pv * t;
-
-                sim[i].playerPos = s;
-                sim[i].playerVel = v;
-                sim[i].pipeDistance = ps;
-                sim[i].pipeHeight = initialState.pipeHeight;
-            }
-
-            return sim;
+            var pv = GameGlobals.PipeScrollSpeed;
+            var pj = pos + v * t + (a * t * t) / 2;
+            var pd = dist - pv * t;
+            v += a * t;
+            return (
+                Dies(pj, v, pd, height),
+                (pj, v, pd)
+            );
         }
 
         private void FetchGameState(out GameState state)
