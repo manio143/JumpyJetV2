@@ -23,7 +23,8 @@ namespace JumpyJetV2
 
         [DataMemberIgnore]
         public bool isRunning;
-        private bool isDying;
+        [DataMemberIgnore]
+        public bool isDying;
 
         [EntityComponent]
         [DataMemberIgnore]

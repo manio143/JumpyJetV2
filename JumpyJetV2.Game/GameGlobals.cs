@@ -20,5 +20,6 @@ namespace JumpyJetV2
         public static EventKey<PauseReason> GamePaused = new EventKey<PauseReason>("Global", "Game Paused");
         public static EventKey<StartReason> GameStarted = new EventKey<StartReason>("Global", "Game Started");
         public static EventKey PipePassed = new EventKey("Global", "Pipe Passed");
+        public static EventKey CharacterUpdated = new EventKey("Global", "Character Updated");
     }
 }

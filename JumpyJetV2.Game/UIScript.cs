@@ -67,7 +67,8 @@ namespace JumpyJetV2
                 if (pauseReason == GlobalEvents.PauseReason.GameOver)
                 {
                     currentScore = 0;
-                    Entity.Get<UIComponent>().Page = new UIPage { RootElement = gameOverRoot };
+                    //Entity.Get<UIComponent>().Page = new UIPage { RootElement = gameOverRoot };
+                    GlobalEvents.GameStarted.Broadcast(GlobalEvents.StartReason.NewGame);
                 }
             }
 
