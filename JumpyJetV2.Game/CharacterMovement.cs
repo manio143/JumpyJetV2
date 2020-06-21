@@ -14,8 +14,9 @@ namespace JumpyJetV2
         private static readonly Vector2 DeathVelocity = new Vector2(0, 1);
         
         // magic number that matches the window resolution
-        private const float TopLimit = (568 - 200) * GameGlobals.GamePixelToUnitScale;
-        
+        internal const float TopLimit = (568 - 200) * GameGlobals.GamePixelToUnitScale;
+        internal const float BottomLimit = -TopLimit * 1.2f;
+
         [DataMemberIgnore]
         public Vector2 Velocity;
         [DataMemberIgnore]
@@ -64,7 +65,7 @@ namespace JumpyJetV2
 
         public bool IsOutOfBounds()
         {
-            return Position.Y <= -TopLimit * 1.2;
+            return Position.Y <= BottomLimit;
         }
     }
 }

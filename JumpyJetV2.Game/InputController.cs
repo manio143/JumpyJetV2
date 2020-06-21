@@ -1,5 +1,6 @@
 ﻿using Stride.Engine;
 using Stride.Core.Annotations;
+using System.Diagnostics;
 
 namespace JumpyJetV2
 {
@@ -15,7 +16,10 @@ namespace JumpyJetV2
             if (character != null && character.isRunning)
             {
                 if (input.Jumped)
+                {
+                    Debug.WriteLine("Jumped!");
                     character.Jump();
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Stride.Core;
+using Stride.Core.Mathematics;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -29,59 +30,84 @@ namespace JumpyJetV2
             }
         }
 
-        private const int StepSamples = 5;
-        private const float StepSize = 0.16f;
+        private const float SimTime = 0.835f;
+        private const int StepSamples = 10;
+        private const float StepSize = SimTime/StepSamples;
         private bool ShouldJump(in GameState gameState)
         {
-            (float posWithout, float posWith, float dist)[] future = new (float, float, float)[StepSamples];
+            var noJump = Simulate(in gameState, new int[] { });
+            var jumpNow = Simulate(in gameState, new[] { 0 });
+            var jumpNext = Simulate(in gameState, new[] { 1 });
+            var noJumpNext = Simulate(in noJump[0], new int[] { });
 
-            var vo = gameState.playerVel;
-            var vw = CharacterMovement.JumpVelocity.Y;
+            var noJumpDies = Dies(noJump);
+            var jumpNowDies = Dies(jumpNow);
+            var jumpNextDies = Dies(jumpNext);
+            var noJumpNextDies = Dies(noJumpNext);
+
+            Debug.WriteLine((noJumpDies, jumpNowDies, jumpNextDies, noJumpNextDies));
+
+            if (jumpNowDies)
+                return false;
+            if (jumpNextDies && noJumpNextDies)
+                return true;
+            else
+                return noJumpDies;
+        }
+
+        private const float CharacterBoxLength = 0.85f;
+        private bool Dies(GameState[] states)
+        {
+            foreach(var state in states)
+            {
+                if (state.playerPos <= CharacterMovement.BottomLimit)
+                    return true;
+                var player = new RectangleF(-1 - CharacterBoxLength / 2,
+                                                state.playerPos + CharacterBoxLength / 2,
+                                                CharacterBoxLength,
+                                                CharacterBoxLength);
+                var lowerPipe = new RectangleF(state.pipeDistance - 1.5f,
+                                               state.pipeHeight - 4.5f,
+                                               3f,
+                                               10f);
+                var upperPipe = new RectangleF(state.pipeDistance - 1.5f,
+                                               state.pipeHeight + 4.5f + 10f,
+                                               3f,
+                                               10f);
+                if (player.Intersects(lowerPipe) || player.Intersects(upperPipe))
+                    return true;
+            }
+            return false;
+        }
+
+        private GameState[] Simulate(in GameState initialState, int[] jumpAtSteps)
+        {
+            var v = initialState.playerVel;
+            var s = initialState.playerPos;
+            var ps = initialState.pipeDistance;
             var pv = GameGlobals.PipeScrollSpeed;
             var a = CharacterMovement.Gravity.Y;
             var t = StepSize;
 
-            future[0] = (
-                gameState.playerPos + vo * t + (a * t * t) / 2,
-                gameState.playerPos + vw * t + (a * t * t) / 2,
-                gameState.pipeDistance + t * pv
-            );
+            var simLength = jumpAtSteps.Length > 0 ? StepSamples : StepSamples / 2;
+            GameState[] sim = new GameState[simLength];
 
-            for (int i = 1; i < StepSamples; i++)
+            for (int i = 0; i < simLength; i++)
             {
-                vo += a * t;
-                vw += a * t;
-                future[i] = (
-                    future[i - 1].posWithout + vo * t + (a * t * t) / 2,
-                    future[i - 1].posWith + vw * t + (a * t * t) / 2,
-                    future[i - 1].dist + t * pv
-                );
+                if(jumpAtSteps.Contains(i))
+                    v = CharacterMovement.JumpVelocity.Y;
+                
+                s += v * t + (a * t * t) / 2;
+                v += a * t;
+                ps += pv * t;
+
+                sim[i].playerPos = s;
+                sim[i].playerVel = v;
+                sim[i].pipeDistance = ps;
+                sim[i].pipeHeight = initialState.pipeHeight;
             }
 
-            var hl = gameState.pipeHeight - 4.4;
-            var hu = gameState.pipeHeight + 2;
-            //return future.Any(p => p.pos < h) && future.All(p => p.dist < 1.6f ? p.pos - h < 2 : true) ||
-            //    future.Select(p => p.pos).Min() - h < 0.2f && gameState.pipeDistance < 1.6f;
-            bool diesDown = false, diesUp = false;
-            foreach (var (po, pw, pd) in future)
-            {
-                if (pd < -1.6)
-                    continue;
-                if (po < hl && pd < 1.75f && pd > -1.6f)
-                    diesDown = true;
-                if (pw > hu && pd < 1.75f && pd > -1.6f)
-                    diesUp = true;
-                if (po < hl - 4)
-                    diesDown = true;
-                if (po > hu + 5)
-                    diesUp = true;
-            }
-            if (diesDown && !diesUp)
-            {
-                future.Select(x => { Debug.WriteLine(x); return false; }).ToArray();
-                Debug.WriteLine("");
-            }
-            return diesDown && !diesUp; //TODO make this actually work :(
+            return sim;
         }
 
         private void FetchGameState(out GameState state)
