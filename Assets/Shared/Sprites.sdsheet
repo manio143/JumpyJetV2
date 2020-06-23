@@ -35,3 +35,18 @@ Sprites:
         Center: {X: 0.0, Y: 0.0}
         Borders: {X: 0.0, Y: 0.0, Z: 0.0, W: 0.0}
         BorderColor: {R: 0, G: 0, B: 0, A: 0}
+    cca2dc5db248a45f715e6c4f8068e4f8:
+        Source: !file ../../Resources/tex1.png
+        Name: line
+        TextureRegion: {X: 1967, Y: 49, Width: 30, Height: 10}
+        Center: {X: 0.0, Y: 10.0}
+        CenterFromMiddle: false
+        Borders: {X: 0.0, Y: 0.0, Z: 0.0, W: 0.0}
+        BorderColor: {R: 0, G: 0, B: 0, A: 0}
+    685224297781d26bcafcc19a093bebfb:
+        Source: !file ../../Resources/tex1.png
+        Name: point
+        TextureRegion: {X: 1527, Y: 1154, Width: 40, Height: 40}
+        Center: {X: 0.0, Y: 0.0}
+        Borders: {X: 0.0, Y: 0.0, Z: 0.0, W: 0.0}
+        BorderColor: {R: 0, G: 0, B: 0, A: 0}

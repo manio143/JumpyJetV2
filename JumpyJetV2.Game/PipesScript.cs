@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Stride.Core;
 using Stride.Core.Mathematics;
 using Stride.Core.Serialization;
 using Stride.Engine;
@@ -28,10 +29,13 @@ namespace JumpyJetV2
         
         private bool isScrolling;
 
-        private readonly Random random = new Random();
+        private Random random = new Random();
 
         private float sceneWidth;
         private float pipeOvervaluedWidth = 1f;
+
+        [DataMemberIgnore]
+        public int? RNGSeed;
 
         public UrlReference<Prefab> PipePrefabUrl { get; set; }
 
@@ -74,6 +78,8 @@ namespace JumpyJetV2
 
             var elapsedTime = (float) Game.UpdateTime.Elapsed.TotalSeconds;
 
+            bool pushBack = false;
+
             for (int i = 0; i < pipeSets.Count; i++)
             {
                 var pipeSetTransform = pipeSets[i].Transform;
@@ -92,7 +98,16 @@ namespace JumpyJetV2
 
                     var nextPosX = pipeSets[prevPipeSetIndex].Transform.Position.X + GapBetweenPipe;
                     pipeSetTransform.Position = new Vector3(nextPosX, GetPipeRandomYPosition(), 0);
+                    
+                    pushBack = true; // push the pipeset to the end of the list
                 }
+            }
+
+            if(pushBack)
+            {
+                var p = pipeSets[0];
+                pipeSets.RemoveAt(0);
+                pipeSets.Add(p);
             }
         }
 
@@ -103,6 +118,8 @@ namespace JumpyJetV2
 
         private void Reset()
         {
+            if (RNGSeed.HasValue)
+                random = new Random(RNGSeed.Value);
             for (var i = 0; i < pipeSets.Count; ++i)
                 pipeSets[i].Transform.Position = new Vector3(StartPipePosition + i * GapBetweenPipe, GetPipeRandomYPosition(), 0);
         }
@@ -115,11 +132,10 @@ namespace JumpyJetV2
 
         internal void ProvideAiInformation(ref float distanceToNext, ref float pipeHeight)
         {
-            Entity pipeSet = pipeSets[0];
-
-            for (var i = 0; i < pipeSets.Count; ++i)
-                if (pipeSets[i].Transform.Position.X > -3.2f && pipeSets[i].Transform.Position.X < pipeSet.Transform.Position.X)
-                    pipeSet = pipeSets[i];
+            var i = 0;
+            Entity pipeSet = pipeSets[i];
+            while (pipeSet.Transform.Position.X < -1.7f) // -1.7 = -1.5 (half pipe) + -0.2 (player butt)
+                pipeSet = pipeSets[++i];
 
             distanceToNext = pipeSet.Transform.Position.X;
             pipeHeight = pipeSet.Transform.Position.Y;

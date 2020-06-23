@@ -29,6 +29,8 @@ namespace JumpyJetV2
         public SpriteFont Font;
         public SpriteSheet UIImages;
 
+        public bool UserControlled = true;
+
         private ModalElement mainMenuRoot;
         private Canvas gameRoot;
         private ModalElement gameOverRoot;
@@ -67,8 +69,10 @@ namespace JumpyJetV2
                 if (pauseReason == GlobalEvents.PauseReason.GameOver)
                 {
                     currentScore = 0;
-                    //Entity.Get<UIComponent>().Page = new UIPage { RootElement = gameOverRoot };
-                    GlobalEvents.GameStarted.Broadcast(GlobalEvents.StartReason.NewGame);
+                    if (UserControlled)
+                        Entity.Get<UIComponent>().Page = new UIPage { RootElement = gameOverRoot };
+                    else // Restart 
+                        GlobalEvents.GameStarted.Broadcast(GlobalEvents.StartReason.NewGame);
                 }
             }
 
@@ -101,8 +105,14 @@ namespace JumpyJetV2
 
             var startButton = new Button
             {
-                Content = new TextBlock {Font = Font, Text = "Touch to Start", TextColor = Color.Black, 
-                    HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center},
+                Content = new TextBlock
+                {
+                    Font = Font,
+                    Text = "Touch to Start",
+                    TextColor = Color.Black,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                },
                 NotPressedImage = buttonImage,
                 PressedImage = buttonImage,
                 MouseOverImage = buttonImage,
@@ -134,7 +144,9 @@ namespace JumpyJetV2
         {
             scoreTextBlock = new TextBlock
             {
-                Font = Font, TextColor = Color.Black, VerticalAlignment = VerticalAlignment.Center
+                Font = Font,
+                TextColor = Color.Black,
+                VerticalAlignment = VerticalAlignment.Center
             };
             scoreTextBlock.SetCanvasPinOrigin(new Vector3(0.5f, 0.5f, 1f));
             scoreTextBlock.SetCanvasRelativePosition(new Vector3(0.2f, 0.05f, 0f));
@@ -155,8 +167,14 @@ namespace JumpyJetV2
         {
             var menuButton = new Button
             {
-                Content = new TextBlock { Font = Font, Text = "Menu", TextColor = Color.Black, 
-                    HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center},
+                Content = new TextBlock
+                {
+                    Font = Font,
+                    Text = "Menu",
+                    TextColor = Color.Black,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                },
                 PressedImage = buttonImage,
                 NotPressedImage = buttonImage,
                 MouseOverImage = buttonImage,
@@ -175,8 +193,14 @@ namespace JumpyJetV2
 
             var retryButton = new Button
             {
-                Content = new TextBlock { Font = Font, Text = "Retry", TextColor = Color.Black, 
-                    HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center},
+                Content = new TextBlock
+                {
+                    Font = Font,
+                    Text = "Retry",
+                    TextColor = Color.Black,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                },
                 Padding = new Thickness(74, 30, 25, 30),
                 MinimumWidth = 190f,
                 PressedImage = buttonImage,
@@ -195,7 +219,7 @@ namespace JumpyJetV2
             var gameOverCanvas = new Canvas();
             gameOverCanvas.Children.Add(menuButton);
             gameOverCanvas.Children.Add(retryButton);
-            
+
             gameOverRoot = new ModalElement
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,

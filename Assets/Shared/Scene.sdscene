@@ -12,7 +12,26 @@ Hierarchy:
         - ref!! ab6a210f-cea3-4f03-8b5d-af95e4a4fb44
         - ref!! 47550ad3-4887-4173-95e0-d98048465edd
         - ref!! 742fc053-f9ff-4f5b-8c49-3a291d8ac007
+        - ref!! b427e060-7a3f-4c75-8d59-ae5c0b969f04
+        - ref!! 35327d32-178a-42c2-8fe6-ca59e512f922
     Parts:
+        -   Folder: null
+            Entity:
+                Id: 35327d32-178a-42c2-8fe6-ca59e512f922
+                Name: LineLower
+                Components:
+                    447e24e13174f2eda49dcc11d0d75f8c: !TransformComponent
+                        Id: 9ca6c4a3-0ba6-4f10-a14c-03ab5cb80c1a
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    1f9a910e50520eb71aac779381ccbff1: !SpriteComponent
+                        Id: 05bd385f-c948-4357-ba78-b07e3e936323
+                        SpriteProvider: !SpriteFromSheet
+                            Sheet: 7d98728e-a9ff-4d50-822b-cced08a38c6b:Sprites
+                            CurrentFrame: 4
+                        Color: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
         -   Entity:
                 Id: 47550ad3-4887-4173-95e0-d98048465edd
                 Name: UI
@@ -27,6 +46,7 @@ Hierarchy:
                         Id: 00fd07e9-f2a1-4bc1-84bb-467e84daeb4a
                         Font: 9ee5c720-b1c4-47c2-9f5b-df4ed16b6980:Font
                         UIImages: b1640af1-7cac-484e-b274-b3b9c3394ef6:UIImages
+                        UserControlled: true
                     035f3412b5435041984c31cfec3c914f: !UIComponent
                         Id: 12345f03-43b5-4150-984c-31cfec3c914f
                         Page: null
@@ -67,6 +87,11 @@ Hierarchy:
                         input: !JumpyJetV2.AIInput,JumpyJetV2.Game
                             characterScript: ref!! 2cd31f96-e7bf-4a49-ae59-5c7bd14933d9
                             pipesScript: ref!! a3abb282-de05-4800-b279-e562372a4185
+                            feedback: ref!! 26f542be-c06a-4e70-93c2-22aa70c5267e
+                    1c0b23615b180c9c7bcb2ce1fa485ac6: !JumpyJetV2.AIFeedback,JumpyJetV2.Game
+                        Id: 26f542be-c06a-4e70-93c2-22aa70c5267e
+                        ui: ref!! 00fd07e9-f2a1-4bc1-84bb-467e84daeb4a
+                        Train: true
         -   Entity:
                 Id: ab6a210f-cea3-4f03-8b5d-af95e4a4fb44
                 Name: BackgroundScript
@@ -93,6 +118,22 @@ Hierarchy:
                             e59aa263f7270e7261d0777c0c351dd4: !StaticPlaneColliderShapeDesc
                                 Normal: {X: 0.0, Y: 1.0, Z: 0.0}
                                 Offset: 0.0
+        -   Entity:
+                Id: b427e060-7a3f-4c75-8d59-ae5c0b969f04
+                Name: LineUpper
+                Components:
+                    447e24e13174f2eda49dcc11d0d75f8c: !TransformComponent
+                        Id: fd8f05de-981f-42ec-aa50-1f6541a9757d
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    1f9a910e50520eb71aac779381ccbff1: !SpriteComponent
+                        Id: 3e49ee8e-78d3-4199-b1d4-6d19814ad4a0
+                        SpriteProvider: !SpriteFromSheet
+                            Sheet: 7d98728e-a9ff-4d50-822b-cced08a38c6b:Sprites
+                            CurrentFrame: 4
+                        Color: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
         -   Entity:
                 Id: d87ce433-90b0-4819-8f55-9d08330b581d
                 Name: PipesScript
@@ -141,23 +182,23 @@ Hierarchy:
                         NodeName: null
                         ColliderShapes:
                             b028aa3fca4e553f9db57024a85a66cc: !CapsuleColliderShapeDesc
-                                Is2D: true
+                                Is2D*: true
                                 Length*: 0.35
                                 Radius*: 0.2
                                 LocalOffset*: {X: 0.03, Y: -0.02, Z: 0.0}
                                 LocalRotation*: {X: 0.0, Y: 0.0, Z: 0.707106769, W: 0.707106769}
-                            54f7272bfa2bbad97d6ff4ee4c9c1e98: !CapsuleColliderShapeDesc
-                                Length: 0.55
-                                Radius: 0.17
-                                Orientation: UpZ
-                                LocalOffset: {X: 0.05, Y: 0.0, Z: 0.0}
-                                LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                             53647ae44e3ba21ff0e7e473e998c44c*: !CapsuleColliderShapeDesc
                                 Is2D: true
                                 Length: 0.2
                                 Radius: 0.22
                                 LocalOffset: {X: 0.0, Y: 0.09, Z: 0.0}
                                 LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                            b0974f86ab5e349d77642ecf4842b4cf*: !CapsuleColliderShapeDesc
+                                Length: 0.55
+                                Radius: 0.17
+                                LocalOffset: {X: 0.05, Y: 0.0, Z: 0.0}
+                                LocalRotation: {X: 0.707106769, Y: 0.0, Z: 0.0, W: 0.707106769}
+                            54f7272bfa2bbad97d6ff4ee4c9c1e98: ~(Deleted)
                     d35e98c07e662060bf2fe915c8c6c2d0*: !JumpyJetV2.CharacterMovement,JumpyJetV2.Game
                         Id: 09304397-1a13-49ee-9460-28d6a8f6a626
                         Enabled: false

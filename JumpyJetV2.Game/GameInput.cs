@@ -1,7 +1,10 @@
-﻿namespace JumpyJetV2
+﻿using System.Threading.Tasks;
+
+namespace JumpyJetV2
 {
     public interface IGameInput
     {
-        bool Jumped { get; }
+        void Initialize();
+        Task<bool> HasJumped();
     }
 }

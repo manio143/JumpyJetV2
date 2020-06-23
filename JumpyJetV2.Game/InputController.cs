@@ -1,32 +1,42 @@
 ﻿using Stride.Engine;
 using Stride.Core.Annotations;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace JumpyJetV2
 {
-    public class InputController : SyncScript
+    public class InputController : AsyncScript
     {
         public CharacterScript character;
 
         [NotNull]
         public IGameInput input;
 
-        public override void Start()
+        internal void Start()
         {
-            if (input is AIInput ai)
-                ai.Start();
+            input.Initialize();
         }
 
-        public override void Update()
+        internal async Task Update()
         {
             if (character != null && character.isRunning && !character.isDying)
             {
-                GlobalEvents.CharacterUpdated.Broadcast(); // notify AI to finish previous frame
-                if (input.Jumped)
+                if (await input.HasJumped())
                 {
                     Debug.WriteLine("Jumped!");
                     character.Jump();
                 }
+            }
+        }
+
+        public async override Task Execute()
+        {
+            Start();
+
+            while(true)
+            {
+                await Script.NextFrame();
+                await Update();
             }
         }
     }
