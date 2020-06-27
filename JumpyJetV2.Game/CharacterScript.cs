@@ -8,6 +8,7 @@ using DIExtensions;
 using Stride.Core;
 using Stride.Core.Mathematics;
 using System;
+using System.Diagnostics;
 
 namespace JumpyJetV2
 {
@@ -19,7 +20,6 @@ namespace JumpyJetV2
     {
         private EventReceiver clearListener = new EventReceiver(GlobalEvents.Clear);
         private EventReceiver newGameListener = new EventReceiver(GlobalEvents.NewGame);
-        private EventReceiver gameOverListener = new EventReceiver(GlobalEvents.GameOver);
 
         [DataMemberIgnore]
         public bool isRunning;
@@ -37,11 +37,11 @@ namespace JumpyJetV2
         private RigidbodyComponent physicsComponent = null;
 
         public uint CharacterId;
+        public bool Broadcast = true;
 
         public void Start()
         {
             this.InjectEntityComponents();
-            Movement.CharacterId = CharacterId;
 
             Reset();
 
@@ -75,7 +75,8 @@ namespace JumpyJetV2
 
                 if (collision.ColliderA.CollisionGroup == CollisionFilterGroups.SensorTrigger ||
                     collision.ColliderB.CollisionGroup == CollisionFilterGroups.SensorTrigger)
-                    GlobalEvents.PipePassed.Broadcast(CharacterId);
+                    if(Broadcast)
+                        GlobalEvents.PipePassed.Broadcast();
             }
         }
 
@@ -86,13 +87,22 @@ namespace JumpyJetV2
         {
             while (Game.IsRunning)
             {
-                // detect collisions with the pipes
+                // detect collisions with the pipes and floor
                 var collision = await physicsComponent.NewCollision();
-                if (collision.ColliderA.CollisionGroup == CollisionFilterGroups.DefaultFilter &&
+
+                if (!isRunning)
+                    continue;
+
+                if (collision.ColliderA.CollisionGroup == CollisionFilterGroups.DefaultFilter ||
                     collision.ColliderB.CollisionGroup == CollisionFilterGroups.DefaultFilter)
                 {
-                    GlobalEvents.CharacterDied.Broadcast(CharacterId);
+                    Debug.WriteLine("Character {0} died", CharacterId);
+                    if(Broadcast)
+                        GlobalEvents.CharacterDied.Broadcast();
                     await AnimateDeath();
+                    if (Broadcast)
+                        GlobalEvents.GameOver.Broadcast();
+                    isRunning = false;
                 }
             }
         }
@@ -117,7 +127,7 @@ namespace JumpyJetV2
             {
                 await Script.NextFrame();
 
-                DebugText.Print($"Position: {Entity.Transform.Position}\nVelocity: {physicsComponent.LinearVelocity}", new Int2(20, 300));
+                //DebugText.Print($"Position: {Entity.Transform.Position}\nVelocity: {physicsComponent.LinearVelocity}", new Int2(20, 300));
                 
                 ProcessEvents();
 
@@ -140,8 +150,6 @@ namespace JumpyJetV2
                 Reset();
             if (newGameListener.TryReceive())
                 isRunning = true;
-            if (gameOverListener.TryReceive())
-                isRunning = false;
         }
 
         public void Jump()

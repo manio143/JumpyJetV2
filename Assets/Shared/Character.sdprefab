@@ -23,8 +23,11 @@ Hierarchy:
                         Color: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
                     c12c7c2ac4ddd27190d3af682b977127: !JumpyJetV2.CharacterScript,JumpyJetV2.Game
                         Id: 8774a33d-26b1-4728-933d-8b2b01c55e45
+                        CharacterId: 0
+                        Broadcast: true
                     4aa384c6b79e6c244abb7f635051166c: !RigidbodyComponent
                         Id: ae5dcafa-bc70-4e87-b99e-a80a4570b587
+                        CollisionGroup: CharacterFilter
                         CanSleep: false
                         Restitution: 0.0
                         Friction: 0.5
@@ -49,5 +52,11 @@ Hierarchy:
                                 Length: 0.55
                                 Radius: 0.17
                                 Orientation: UpZ
-                                LocalOffset: {X: 0.05, Y: 0.0, Z: 0.0}
+                                LocalOffset: {X: 0.15, Y: 0.0, Z: 0.0}
                                 LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                    e5416b0e8e83f190557acb6e8cd6488f: !JumpyJetV2.CharacterMovement,JumpyJetV2.Game
+                        Id: 58d74e72-62c3-46bd-9546-f3d1327b38ac
+                        Enabled: false
+                    d3c28340c767d3d9a050142caa6e6271: !JumpyJetV2.CharacterAnimation,JumpyJetV2.Game
+                        Id: ed5a3efe-58ac-4f9b-8c4a-3bfd590c8f97
+                        Enabled: false

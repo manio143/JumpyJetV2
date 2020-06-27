@@ -15,14 +15,13 @@ namespace JumpyJetV2
             // Find our JumpyJetRenderer to start/stop parallax background
             var renderer = (JumpyJetRenderer)((SceneCameraRenderer)SceneSystem.GraphicsCompositor.Game).Child;
 
-            var pauseListener = new EventReceiver<uint>(GlobalEvents.CharacterDied);
+            var pauseListener = new EventReceiver(GlobalEvents.CharacterDied);
             var startListener = new EventReceiver(GlobalEvents.Clear);
 
             while (Game.IsRunning)
             {
                 // we don't care for the reason - either way we stop the background
-                var id = await pauseListener.ReceiveAsync();
-                if (id != 0) continue;
+                await pauseListener.ReceiveAsync();
                 renderer.StopScrolling();
                 startListener.Reset(); // remove any start events that happened before pause
 

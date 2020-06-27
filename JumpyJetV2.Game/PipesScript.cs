@@ -20,7 +20,7 @@ namespace JumpyJetV2
         private const float GapBetweenPipe = 4f;
         private const float StartPipePosition = 4f;
 
-        private EventReceiver<uint> diedListener = new EventReceiver<uint>(GlobalEvents.CharacterDied);
+        private EventReceiver diedListener = new EventReceiver(GlobalEvents.CharacterDied);
         private EventReceiver clearListener = new EventReceiver(GlobalEvents.Clear);
         private EventReceiver gameStartedListener = new EventReceiver(GlobalEvents.NewGame);
         private EventReceiver gameEndedListener = new EventReceiver(GlobalEvents.GameOver);
@@ -101,7 +101,7 @@ namespace JumpyJetV2
 
         private void ProcessEvents()
         {
-            if (gameEndedListener.TryReceive() || diedListener.TryReceive(out var id) && id == 0)
+            if (gameEndedListener.TryReceive() || diedListener.TryReceive())
                 isScrolling = false;
 
             if (clearListener.TryReceive())

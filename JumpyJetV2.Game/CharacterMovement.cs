@@ -23,7 +23,6 @@ namespace JumpyJetV2
         public Vector2 Position;
 
         public bool Enabled;
-        public uint CharacterId;
 
         public void Reset()
         {
@@ -63,13 +62,11 @@ namespace JumpyJetV2
             }
 
             Entity.Transform.Position = (Vector3)Position;
-
-            GlobalEvents.CharacterUpdated.Broadcast(CharacterId);
         }
 
         public bool IsOutOfBounds()
         {
-            return Position.Y <= BottomLimit;
+            return Position.Y <= BottomLimit || Position.Y >= TopLimit + 3.0f;
         }
     }
 }

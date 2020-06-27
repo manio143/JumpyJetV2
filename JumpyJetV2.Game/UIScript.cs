@@ -24,7 +24,7 @@ namespace JumpyJetV2
     {
         private EventReceiver gameOverListener = new EventReceiver(GlobalEvents.GameOver);
         private EventReceiver clearListener = new EventReceiver(GlobalEvents.Clear);
-        private EventReceiver<uint> pipePassedListener = new EventReceiver<uint>(GlobalEvents.PipePassed);
+        private EventReceiver pipePassedListener = new EventReceiver(GlobalEvents.PipePassed);
 
         public SpriteFont Font;
         public SpriteSheet UIImages;
@@ -60,8 +60,8 @@ namespace JumpyJetV2
         public override void Update()
         {
             // Increase the score if a new pipe has been passed
-            if (pipePassedListener.TryReceive(out var id))
-                if (id == 0) ++currentScore;
+            if (pipePassedListener.TryReceive())
+                ++currentScore;
 
             // move to game over UI
             if (gameOverListener.TryReceive())

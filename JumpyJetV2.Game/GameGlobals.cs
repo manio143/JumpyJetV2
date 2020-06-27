@@ -32,16 +32,11 @@ namespace JumpyJetV2
         /// <summary>
         /// Signals the player *i* has passed a pipe.
         /// </summary>
-        public static EventKey<uint> PipePassed = new EventKey<uint>("Global", "Pipe Passed");
+        public static EventKey PipePassed = new EventKey("Global", "Pipe Passed");
 
         /// <summary>
         /// Signals the player *i* has died.
         /// </summary>
-        public static EventKey<uint> CharacterDied = new EventKey<uint>("Global", "Character Died");
-
-        /// <summary>
-        /// Signals the player *i* was updated.
-        /// </summary>
-        public static EventKey<uint> CharacterUpdated = new EventKey<uint>("Global", "Character Updated");
+        public static EventKey CharacterDied = new EventKey("Global", "Character Died");
     }
 }

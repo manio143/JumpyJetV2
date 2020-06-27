@@ -9,8 +9,8 @@ namespace JumpyJetV2.AI
 {
     public class AIFeedback : SyncScript
     {
-        private EventReceiver<uint> deathListener = new EventReceiver<uint>(GlobalEvents.CharacterDied);
-        private EventReceiver<uint> pipeReceiver = new EventReceiver<uint>(GlobalEvents.PipePassed);
+        private EventReceiver deathListener = new EventReceiver(GlobalEvents.CharacterDied);
+        private EventReceiver pipeReceiver = new EventReceiver(GlobalEvents.PipePassed);
 
         private AIBrain brain;
         public bool Train { get; set; }
@@ -33,11 +33,11 @@ namespace JumpyJetV2.AI
                 // draw lines
                 DrawLines();
 
-                if (deathListener.TryReceive(out _))
+                if (deathListener.TryReceive())
                     brain.Inform(AIInput.CharacterMoveResult.Died);
                 else
                 {
-                    if (pipeReceiver.TryReceive(out _))
+                    if (pipeReceiver.TryReceive())
                         brain.Inform(AIInput.CharacterMoveResult.PipePassed);
                     else
                         brain.Inform(AIInput.CharacterMoveResult.Lived);
