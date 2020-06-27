@@ -23,6 +23,7 @@ namespace JumpyJetV2
         public Vector2 Position;
 
         public bool Enabled;
+        public uint CharacterId;
 
         public void Reset()
         {
@@ -49,6 +50,7 @@ namespace JumpyJetV2
         {
             if (!Enabled)
                 return;
+
             float deltaTime = (float)Game.UpdateTime.Elapsed.TotalSeconds;
             var v = Velocity;
             var t = deltaTime;
@@ -61,6 +63,8 @@ namespace JumpyJetV2
             }
 
             Entity.Transform.Position = (Vector3)Position;
+
+            GlobalEvents.CharacterUpdated.Broadcast(CharacterId);
         }
 
         public bool IsOutOfBounds()

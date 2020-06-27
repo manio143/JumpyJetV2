@@ -1,23 +1,20 @@
 ﻿using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Engine.Events;
-using Stride.Graphics.GeometricPrimitives;
-using Stride.Particles.DebugDraw;
 using System;
 using System.Diagnostics;
 using System.Linq;
 
-namespace JumpyJetV2
+namespace JumpyJetV2.AI
 {
     public class AIFeedback : SyncScript
     {
-        private EventReceiver<GlobalEvents.PauseReason> pauseReceiver =
-            new EventReceiver<GlobalEvents.PauseReason>(GlobalEvents.GamePaused);
-        private EventReceiver pipeReceiver = new EventReceiver(GlobalEvents.PipePassed);
+        private EventReceiver<uint> deathListener = new EventReceiver<uint>(GlobalEvents.CharacterDied);
+        private EventReceiver<uint> pipeReceiver = new EventReceiver<uint>(GlobalEvents.PipePassed);
 
         private AIBrain brain;
         public bool Train { get; set; }
-        
+
         public UIScript ui;
 
         public override void Update()
@@ -36,11 +33,11 @@ namespace JumpyJetV2
                 // draw lines
                 DrawLines();
 
-                if (pauseReceiver.TryReceive(out var reason) && reason == GlobalEvents.PauseReason.Death)
+                if (deathListener.TryReceive(out _))
                     brain.Inform(AIInput.CharacterMoveResult.Died);
                 else
                 {
-                    if (pipeReceiver.TryReceive())
+                    if (pipeReceiver.TryReceive(out _))
                         brain.Inform(AIInput.CharacterMoveResult.PipePassed);
                     else
                         brain.Inform(AIInput.CharacterMoveResult.Lived);
@@ -57,20 +54,20 @@ namespace JumpyJetV2
             // THIS IS A HACK
             // I don't know an easier way to draw a line than to take a square texture
             // rescale it, rotate it and position it in such a way that it looks like a line
-            if(lineU == null || lineL == null)
+            if (lineU == null || lineL == null)
             {
                 lineU = Entity.Scene.Entities.First(e => e.Name == "LineUpper");
                 lineL = Entity.Scene.Entities.First(e => e.Name == "LineLower");
             }
 
             var data = brain.playerAndPipes;
-            var upperVec = (data.upper - data.player);
-            var lowerVec = (data.lower - data.player);
+            var upperVec = data.upper - data.player;
+            var lowerVec = data.lower - data.player;
 
             // make it as long as the distance from player to pipe
             // horizontally
-            lineU.Transform.Scale = new Vector3(upperVec.Length()/lineRectSide, 1, 1);
-            lineL.Transform.Scale = new Vector3(lowerVec.Length()/lineRectSide, 1, 1);
+            lineU.Transform.Scale = new Vector3(upperVec.Length() / lineRectSide, 1, 1);
+            lineL.Transform.Scale = new Vector3(lowerVec.Length() / lineRectSide, 1, 1);
 
             // given a 2D vector we can find an angle
             var thetaU = (float)Math.Atan2(upperVec.Y, upperVec.X); // radians
@@ -91,9 +88,9 @@ namespace JumpyJetV2
         public void Initialize(AIBrain brain)
         {
             this.brain = brain;
-            brain.Train = this.Train;
-            brain.UI = this.ui;
-            pauseReceiver.Reset();
+            brain.Train = Train;
+            brain.UI = ui;
+            deathListener.Reset();
         }
     }
 }

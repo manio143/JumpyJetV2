@@ -1,4 +1,5 @@
-﻿using SharpNeat.Core;
+﻿using JumpyJetV2.Input;
+using SharpNeat.Core;
 using SharpNeat.Decoders;
 using SharpNeat.Decoders.Neat;
 using SharpNeat.DistanceMetrics;
@@ -18,7 +19,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JumpyJetV2
+namespace JumpyJetV2.AI
 {
     [DataContract]
     public class AIInput : IGameInput
@@ -64,7 +65,7 @@ namespace JumpyJetV2
             state.playerPos = position.Y;
             state.playerVel = velocity.Y;
             pipesScript.ProvideAiInformation(ref state.pipeDistance, ref state.pipeHeight);
-            
+
             state.pipeDistance -= position.X;
         }
     }

@@ -7,6 +7,7 @@ using Stride.Physics;
 using DIExtensions;
 using Stride.Core;
 using Stride.Core.Mathematics;
+using System;
 
 namespace JumpyJetV2
 {
@@ -16,10 +17,9 @@ namespace JumpyJetV2
     /// </summary>
     public class CharacterScript : AsyncScript
     {
-        private EventReceiver<GlobalEvents.PauseReason> gamePausedListener =
-            new EventReceiver<GlobalEvents.PauseReason>(GlobalEvents.GamePaused);
-        private EventReceiver<GlobalEvents.StartReason> gameStartedListener =
-            new EventReceiver<GlobalEvents.StartReason>(GlobalEvents.GameStarted);
+        private EventReceiver clearListener = new EventReceiver(GlobalEvents.Clear);
+        private EventReceiver newGameListener = new EventReceiver(GlobalEvents.NewGame);
+        private EventReceiver gameOverListener = new EventReceiver(GlobalEvents.GameOver);
 
         [DataMemberIgnore]
         public bool isRunning;
@@ -36,9 +36,12 @@ namespace JumpyJetV2
         [EntityComponent]
         private RigidbodyComponent physicsComponent = null;
 
+        public uint CharacterId;
+
         public void Start()
         {
             this.InjectEntityComponents();
+            Movement.CharacterId = CharacterId;
 
             Reset();
 
@@ -72,7 +75,7 @@ namespace JumpyJetV2
 
                 if (collision.ColliderA.CollisionGroup == CollisionFilterGroups.SensorTrigger ||
                     collision.ColliderB.CollisionGroup == CollisionFilterGroups.SensorTrigger)
-                    GlobalEvents.PipePassed.Broadcast();
+                    GlobalEvents.PipePassed.Broadcast(CharacterId);
             }
         }
 
@@ -83,16 +86,13 @@ namespace JumpyJetV2
         {
             while (Game.IsRunning)
             {
-                await Script.NextFrame();
-
                 // detect collisions with the pipes
                 var collision = await physicsComponent.NewCollision();
                 if (collision.ColliderA.CollisionGroup == CollisionFilterGroups.DefaultFilter &&
                     collision.ColliderB.CollisionGroup == CollisionFilterGroups.DefaultFilter)
                 {
-                    GlobalEvents.GamePaused.Broadcast(GlobalEvents.PauseReason.Death);
+                    GlobalEvents.CharacterDied.Broadcast(CharacterId);
                     await AnimateDeath();
-                    GlobalEvents.GamePaused.Broadcast(GlobalEvents.PauseReason.GameOver);
                 }
             }
         }
@@ -118,9 +118,8 @@ namespace JumpyJetV2
                 await Script.NextFrame();
 
                 DebugText.Print($"Position: {Entity.Transform.Position}\nVelocity: {physicsComponent.LinearVelocity}", new Int2(20, 300));
-
-                ListenForPausedEvent();
-                ListenForStartEvent();
+                
+                ProcessEvents();
 
                 if (isRunning)
                 {
@@ -135,46 +134,20 @@ namespace JumpyJetV2
             }
         }
 
+        private void ProcessEvents()
+        {
+            if (clearListener.TryReceive())
+                Reset();
+            if (newGameListener.TryReceive())
+                isRunning = true;
+            if (gameOverListener.TryReceive())
+                isRunning = false;
+        }
+
         public void Jump()
         {
             if (isRunning && !isDying)
                 Movement.Jump();
-        }
-
-        private void ListenForStartEvent()
-        {
-            if (gameStartedListener.TryReceive(out var startReason))
-            {
-                switch (startReason)
-                {
-                    case GlobalEvents.StartReason.NewGame:
-                        Reset();
-                        isRunning = true;
-                        break;
-                    case GlobalEvents.StartReason.Clear:
-                        Reset();
-                        break;
-                    case GlobalEvents.StartReason.UnPause:
-                        isRunning = true;
-                        break;
-                }
-            }
-        }
-
-        private void ListenForPausedEvent()
-        {
-            if (gamePausedListener.TryReceive(out var pausedReason))
-            {
-                switch (pausedReason)
-                {
-                    case GlobalEvents.PauseReason.GameOver:
-                        isRunning = false;
-                        break;
-                    case GlobalEvents.PauseReason.Pause:
-                        isRunning = false;
-                        break;
-                }
-            }
         }
     }
 }

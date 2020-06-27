@@ -19,9 +19,9 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace JumpyJetV2
+namespace JumpyJetV2.AI
 {
-    public class AIBrain
+    public class AIBrain : IAIBrain
     {
         private MultithreadSynchronization sync = new MultithreadSynchronization();
 
@@ -42,16 +42,16 @@ namespace JumpyJetV2
         /// Given a GameState the AI predicts wether the character should jump or not.
         /// </summary>
         /// <returns>should jump?</returns>
-        public async Task<bool> Predict(AIInput.GameState gameState)
+        public async Task<bool> Predict(AIInput.GameState gameState, uint id = 0)
         {
             // Debug data to draw helper lines
             playerAndPipes.player = new Vector2(-1, gameState.playerPos);
             playerAndPipes.upper = new Vector2(gameState.pipeDistance - 1, gameState.pipeHeight + 1.2f);
             playerAndPipes.lower = new Vector2(gameState.pipeDistance - 1, gameState.pipeHeight - 1.2f);
 
-            double distanceToUpperPipe = (playerAndPipes.upper - playerAndPipes.player).Length();
-            double distanceToLowerPipe = (playerAndPipes.lower - playerAndPipes.player).Length();
-            double[] input = new double[] { gameState.playerPos, gameState.playerVel, distanceToUpperPipe, distanceToLowerPipe, gameState.pipeDistance };
+            double distanceToUpperPipe = playerAndPipes.upper.Y - playerAndPipes.player.Y;
+            double distanceToLowerPipe = playerAndPipes.lower.Y - playerAndPipes.player.Y;
+            double[] input = new double[] { gameState.playerPos, /*gameState.playerVel,*/ distanceToUpperPipe, distanceToLowerPipe, gameState.pipeDistance };
 
             if (Train)
             {
@@ -74,7 +74,7 @@ namespace JumpyJetV2
         /// </summary>
         /// <param name="result"></param>
         /// <returns></returns>
-        public void Inform(AIInput.CharacterMoveResult result)
+        public void Inform(AIInput.CharacterMoveResult result, uint id = 0)
         {
             switch (result)
             {
@@ -157,7 +157,7 @@ namespace JumpyJetV2
 
                 if (pipesCrossed > PipesPassedTreshold)
                     StopConditionSatisfied = true;
-                
+
                 EvaluationCount++;
 
                 return new FitnessInfo(fitness, fitness);
@@ -184,13 +184,13 @@ namespace JumpyJetV2
         NeatGenomeFactory neatGenomeFactory;
         List<NeatGenome> genomeList;
         SerialGenomeListEvaluator<NeatGenome, IBlackBox> genomeListEvaluator;
-        private const int SpecieCount = 100;
+        private const int SpecieCount = 50;
 
         public bool HasPredicted { get; private set; }
 
         public void Start()
         {
-            if(!Train)
+            if (!Train)
             {
                 Load();
                 return;
@@ -199,7 +199,7 @@ namespace JumpyJetV2
             UI.UserControlled = false;
             Pipes.RNGSeed = 0;
 
-            neatGenomeFactory = new NeatGenomeFactory(inputNeuronCount: 5, outputNeuronCount: 1);
+            neatGenomeFactory = new NeatGenomeFactory(inputNeuronCount: 4, outputNeuronCount: 1);
 
             TryLoadState(); // continue training
 
@@ -208,8 +208,8 @@ namespace JumpyJetV2
                 SpecieCount = SpecieCount,
             };
 
-            var distanceMetric = new EuclideanDistanceMetric();
-            var speciationStrategy = new ParallelKMeansClusteringStrategy<NeatGenome>
+            var distanceMetric = new ManhattanDistanceMetric();
+            var speciationStrategy = new KMeansClusteringStrategy<NeatGenome>
                 (distanceMetric);
 
             var complexityRegulationStrategy = new NullComplexityRegulationStrategy();
@@ -240,7 +240,7 @@ namespace JumpyJetV2
             sync.Generation++;
             sync.GenHighScore = 0;
             SaveState();
-            Pipes.RNGSeed = seedProvider.Next();
+            //Pipes.RNGSeed = seedProvider.Next();
         }
 
         private async Task TrainAI()
@@ -272,11 +272,11 @@ namespace JumpyJetV2
         }
         internal void TryLoadState()
         {
-            if(File.Exists(AITrainFile))
+            if (File.Exists(AITrainFile))
             {
                 var xmlReader = XmlReader.Create(AITrainFile);
                 genomeList = NeatGenomeXmlIO.ReadCompleteGenomeList(xmlReader, false, neatGenomeFactory);
-                if(genomeList.Count != SpecieCount)
+                if (genomeList.Count != SpecieCount)
                     genomeList = neatGenomeFactory.CreateGenomeList(length: SpecieCount, 0);
             }
             else
@@ -289,14 +289,14 @@ namespace JumpyJetV2
         {
             UI.UserControlled = true;
 
-            neatGenomeFactory = new NeatGenomeFactory(inputNeuronCount: 5, outputNeuronCount: 1);
+            neatGenomeFactory = new NeatGenomeFactory(inputNeuronCount: 4, outputNeuronCount: 1);
             var activationScheme = NetworkActivationScheme
                 .CreateCyclicFixedTimestepsScheme(1);
             var genomeDecoder = new NeatGenomeDecoder(activationScheme);
 
             var xmlReader = XmlReader.Create(AIFile);
             var genome = NeatGenomeXmlIO.ReadCompleteGenomeList(xmlReader, false, neatGenomeFactory)[0];
-            
+
             trainedPhenome = genomeDecoder.Decode(genome);
         }
         private IBlackBox trainedPhenome;

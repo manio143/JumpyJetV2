@@ -3,7 +3,7 @@ using Stride.Core.Annotations;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace JumpyJetV2
+namespace JumpyJetV2.Input
 {
     public class InputController : AsyncScript
     {
@@ -33,7 +33,7 @@ namespace JumpyJetV2
         {
             Start();
 
-            while(true)
+            while (true)
             {
                 await Script.NextFrame();
                 await Update();

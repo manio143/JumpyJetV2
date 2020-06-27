@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace JumpyJetV2
+namespace JumpyJetV2.Input
 {
     public interface IGameInput
     {

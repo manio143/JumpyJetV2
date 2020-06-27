@@ -3,7 +3,7 @@ using Stride.Input;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JumpyJetV2
+namespace JumpyJetV2.Input
 {
     [DataContract]
     public class PlayerInput : IGameInput

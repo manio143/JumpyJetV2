@@ -20,10 +20,10 @@ namespace JumpyJetV2
         private const float GapBetweenPipe = 4f;
         private const float StartPipePosition = 4f;
 
-        private EventReceiver<GlobalEvents.PauseReason> gamePausedListener =
-            new EventReceiver<GlobalEvents.PauseReason>(GlobalEvents.GamePaused);
-        private EventReceiver<GlobalEvents.StartReason> gameStartedListener =
-            new EventReceiver<GlobalEvents.StartReason>(GlobalEvents.GameStarted);
+        private EventReceiver<uint> diedListener = new EventReceiver<uint>(GlobalEvents.CharacterDied);
+        private EventReceiver clearListener = new EventReceiver(GlobalEvents.Clear);
+        private EventReceiver gameStartedListener = new EventReceiver(GlobalEvents.NewGame);
+        private EventReceiver gameEndedListener = new EventReceiver(GlobalEvents.GameOver);
 
         private readonly List<Entity> pipeSets = new List<Entity>();
         
@@ -59,24 +59,12 @@ namespace JumpyJetV2
 
         public override void Update()
         {
-            if (gamePausedListener.TryReceive(out _))
-                isScrolling = false;
-
-            if (gameStartedListener.TryReceive(out var startReason))
-                switch (startReason)
-                {
-                    case GlobalEvents.StartReason.NewGame:
-                        Reset(); isScrolling = true; break;
-                    case GlobalEvents.StartReason.Clear:
-                        Reset(); break;
-                    case GlobalEvents.StartReason.UnPause:
-                        isScrolling = true; break;
-                }
+            ProcessEvents();
 
             if (!isScrolling)
                 return;
 
-            var elapsedTime = (float) Game.UpdateTime.Elapsed.TotalSeconds;
+            var elapsedTime = (float)Game.UpdateTime.Elapsed.TotalSeconds;
 
             bool pushBack = false;
 
@@ -86,29 +74,41 @@ namespace JumpyJetV2
 
                 // update the position of the pipe
                 pipeSetTransform.Position -= new Vector3(elapsedTime * GameGlobals.PipeScrollSpeed, 0, 0);
-                    
+
                 // move the pipe to the end of screen if not visible anymore
-                if (pipeSetTransform.Position.X + pipeOvervaluedWidth/2 < -sceneWidth/2)
+                if (pipeSetTransform.Position.X + pipeOvervaluedWidth / 2 < -sceneWidth / 2)
                 {
 
                     // When a pipe is determined to be reset,
                     // get its next position by adding an offset to the position
                     // of a pipe which index is before itself.
-                    var prevPipeSetIndex =  (i + pipeSets.Count - 1) % pipeSets.Count;
+                    var prevPipeSetIndex = (i + pipeSets.Count - 1) % pipeSets.Count;
 
                     var nextPosX = pipeSets[prevPipeSetIndex].Transform.Position.X + GapBetweenPipe;
                     pipeSetTransform.Position = new Vector3(nextPosX, GetPipeRandomYPosition(), 0);
-                    
+
                     pushBack = true; // push the pipeset to the end of the list
                 }
             }
 
-            if(pushBack)
+            if (pushBack)
             {
                 var p = pipeSets[0];
                 pipeSets.RemoveAt(0);
                 pipeSets.Add(p);
             }
+        }
+
+        private void ProcessEvents()
+        {
+            if (gameEndedListener.TryReceive() || diedListener.TryReceive(out var id) && id == 0)
+                isScrolling = false;
+
+            if (clearListener.TryReceive())
+                Reset();
+
+            if (gameStartedListener.TryReceive())
+                isScrolling = true;
         }
 
         private float GetPipeRandomYPosition()

@@ -14,12 +14,34 @@ namespace JumpyJetV2
 
     static class GlobalEvents
     {
-        public enum PauseReason : byte { GameOver, Pause, Death }
-        public enum StartReason : byte { NewGame, UnPause, Clear }
+        /// <summary>
+        /// Signals the game ended.
+        /// </summary>
+        public static EventKey GameOver = new EventKey("Global", "Game Over");
 
-        public static EventKey<PauseReason> GamePaused = new EventKey<PauseReason>("Global", "Game Paused");
-        public static EventKey<StartReason> GameStarted = new EventKey<StartReason>("Global", "Game Started");
-        public static EventKey PipePassed = new EventKey("Global", "Pipe Passed");
-        public static EventKey CharacterUpdated = new EventKey("Global", "Character Updated");
+        /// <summary>
+        /// Signals the game state should be cleared.
+        /// </summary>
+        public static EventKey Clear = new EventKey("Global", "Clear Game State");
+
+        /// <summary>
+        /// Signals the start of a new game.
+        /// </summary>
+        public static EventKey NewGame = new EventKey("Global", "New Game");
+
+        /// <summary>
+        /// Signals the player *i* has passed a pipe.
+        /// </summary>
+        public static EventKey<uint> PipePassed = new EventKey<uint>("Global", "Pipe Passed");
+
+        /// <summary>
+        /// Signals the player *i* has died.
+        /// </summary>
+        public static EventKey<uint> CharacterDied = new EventKey<uint>("Global", "Character Died");
+
+        /// <summary>
+        /// Signals the player *i* was updated.
+        /// </summary>
+        public static EventKey<uint> CharacterUpdated = new EventKey<uint>("Global", "Character Updated");
     }
 }

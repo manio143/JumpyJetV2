@@ -22,9 +22,9 @@ namespace JumpyJetV2
     /// </summary>
     public class UIScript : SyncScript
     {
-        private EventReceiver<GlobalEvents.PauseReason> gamePausedListener =
-            new EventReceiver<GlobalEvents.PauseReason>(GlobalEvents.GamePaused);
-        private EventReceiver pipePassedListener = new EventReceiver(GlobalEvents.PipePassed);
+        private EventReceiver gameOverListener = new EventReceiver(GlobalEvents.GameOver);
+        private EventReceiver clearListener = new EventReceiver(GlobalEvents.Clear);
+        private EventReceiver<uint> pipePassedListener = new EventReceiver<uint>(GlobalEvents.PipePassed);
 
         public SpriteFont Font;
         public SpriteSheet UIImages;
@@ -60,21 +60,23 @@ namespace JumpyJetV2
         public override void Update()
         {
             // Increase the score if a new pipe has been passed
-            if (pipePassedListener.TryReceive())
-                ++currentScore;
+            if (pipePassedListener.TryReceive(out var id))
+                if (id == 0) ++currentScore;
 
             // move to game over UI
-            if (gamePausedListener.TryReceive(out var pauseReason))
+            if (gameOverListener.TryReceive())
             {
-                if (pauseReason == GlobalEvents.PauseReason.GameOver)
+                if (UserControlled)
+                    Entity.Get<UIComponent>().Page = new UIPage { RootElement = gameOverRoot };
+                else
                 {
-                    currentScore = 0;
-                    if (UserControlled)
-                        Entity.Get<UIComponent>().Page = new UIPage { RootElement = gameOverRoot };
-                    else // Restart 
-                        GlobalEvents.GameStarted.Broadcast(GlobalEvents.StartReason.NewGame);
+                    GlobalEvents.Clear.Broadcast();
+                    GlobalEvents.NewGame.Broadcast();
                 }
             }
+
+            if (clearListener.TryReceive())
+                currentScore = 0;
 
             // Update the current score
             scoreTextBlock.Text = "Score : {0,2}".ToFormat(currentScore);
@@ -124,7 +126,7 @@ namespace JumpyJetV2
             startButton.SetCanvasRelativePosition(new Vector3(0.5f, 0.7f, 0f));
             startButton.Click += (sender, args) =>
             {
-                GlobalEvents.GameStarted.Broadcast(GlobalEvents.StartReason.NewGame);
+                GlobalEvents.NewGame.Broadcast();
                 StartGameMode();
             };
 
@@ -186,8 +188,7 @@ namespace JumpyJetV2
             menuButton.SetCanvasRelativePosition(new Vector3(0.70f, 0.7f, 0f));
             menuButton.Click += (sender, args) =>
             {
-                // this could be a separete event
-                GlobalEvents.GameStarted.Broadcast(GlobalEvents.StartReason.Clear);
+                GlobalEvents.Clear.Broadcast();
                 StartMainMenuMode();
             };
 
@@ -212,7 +213,8 @@ namespace JumpyJetV2
             retryButton.SetCanvasRelativePosition(new Vector3(0.3f, 0.7f, 0f));
             retryButton.Click += (sender, args) =>
             {
-                GlobalEvents.GameStarted.Broadcast(GlobalEvents.StartReason.NewGame);
+                GlobalEvents.Clear.Broadcast();
+                GlobalEvents.NewGame.Broadcast();
                 StartGameMode();
             };
 
