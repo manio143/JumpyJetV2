@@ -1,8 +1,10 @@
 ﻿using OpenTK.Graphics.ES20;
+using Stride.Core.Diagnostics;
 using Stride.Core.Mathematics;
 using Stride.Core.Serialization;
 using Stride.Engine;
 using Stride.Engine.Events;
+using Stride.Physics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,6 +16,8 @@ namespace JumpyJetV2.AIv2
 {
     public class AIController : AsyncScript
     {
+        private static ProfilingKey AIProfilingKey = new ProfilingKey("JJ.AIScript");
+
         private EventReceiver newGameEvent = new EventReceiver(GlobalEvents.NewGame);
 
         public UrlReference<Prefab> CharacterPrefabUrl { get; set; }
@@ -22,7 +26,9 @@ namespace JumpyJetV2.AIv2
 
         private NeuralNetworkEvolution neat;
         private List<NeuralNetworkEvolution.Network> ai;
+        private Entity root;
         private Entity[] characters;
+        private RigidbodyComponent[] characterPhysics;
         private CharacterScript[] characterScripts;
         private Prefab characterPrefab;
 
@@ -42,8 +48,10 @@ namespace JumpyJetV2.AIv2
             generation = 1;
             highscore = 0;
 
+            root = new Entity("CharacterRoot");
             characters = new Entity[neat.options.Population];
             characterScripts = new CharacterScript[neat.options.Population];
+            characterPhysics = new RigidbodyComponent[neat.options.Population];
 
             for (int i = 0; i < characters.Length; i++)
             {
@@ -51,9 +59,15 @@ namespace JumpyJetV2.AIv2
                 characterScripts[i] = characters[i].Get<CharacterScript>();
                 characterScripts[i].CharacterId = (uint)i + 1;
                 characterScripts[i].Broadcast = false;
+                characterPhysics[i] = characters[i].Get<RigidbodyComponent>();
 
-                Entity.Scene.Entities.Add(characters[i]);
+                root.AddChild(characters[i]);
             }
+
+            Entity.Scene.Entities.Insert(2, root);
+
+            Profiler.Enable(AIProfilingKey);
+            //characterPhysics[0].Simulation.ColliderShapesRendering = true;
 
             ResetRound();
         }
@@ -65,6 +79,9 @@ namespace JumpyJetV2.AIv2
             dead = characterScripts.Select(_ => false).ToArray();
             score = 0;
             generation = 1;
+
+            //foreach (var physics in characterPhysics)
+            //    physics.Enabled = true;
         }
 
         public override async Task Execute()
@@ -84,6 +101,8 @@ namespace JumpyJetV2.AIv2
 
                 DebugText.Print($"Generation: {generation}\nAlive: {dead.Count(d => !d)}/{ai.Count}\nScore: {score}\nHighscore: {highscore}", new Int2(20, 300));
 
+                var profiler = Profiler.Begin(AIProfilingKey);
+
                 // get current state
                 float dist = 0, height = 0;
                 PipesScript.ProvideAiInformation(ref dist, ref height);
@@ -97,6 +116,7 @@ namespace JumpyJetV2.AIv2
                     if (!character.isRunning || character.isDying)
                     {
                         dead[i] = true;
+                        //characterPhysics[i].Enabled = false;
                         neat.AddWithScore(ai[i], score);
                         continue;
                     }
@@ -119,6 +139,8 @@ namespace JumpyJetV2.AIv2
                     GlobalEvents.GameOver.Broadcast();
                     ResetRound();
                 }
+
+                profiler.End();
             }
 
         }

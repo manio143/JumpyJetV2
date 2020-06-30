@@ -7,14 +7,13 @@ Offset: {X: 0.0, Y: 0.0, Z: 0.0}
 Hierarchy:
     RootParts:
         - ref!! 6ec17338-026d-4ad3-9615-4975281cf3ba
-        - ref!! ca83ba5b-34d9-4a3a-87bd-fb02034551e1 #character
-        - ref!! d87ce433-90b0-4819-8f55-9d08330b581d #pipes
-        - ref!! ab6a210f-cea3-4f03-8b5d-af95e4a4fb44 #bg
-        - ref!! 47550ad3-4887-4173-95e0-d98048465edd #ui
+        - ref!! d87ce433-90b0-4819-8f55-9d08330b581d
+        - ref!! ab6a210f-cea3-4f03-8b5d-af95e4a4fb44
         - ref!! 742fc053-f9ff-4f5b-8c49-3a291d8ac007
         - ref!! b427e060-7a3f-4c75-8d59-ae5c0b969f04
         - ref!! 35327d32-178a-42c2-8fe6-ca59e512f922
         - ref!! fec5b722-b33b-429c-85eb-85a95803c0c7
+        - ref!! 47550ad3-4887-4173-95e0-d98048465edd
     Parts:
         -   Folder: null
             Entity:
@@ -82,11 +81,11 @@ Hierarchy:
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
-                    07eded0641c9db1563cfb5e93f800f60: !JumpyJetV2.Input.InputController,JumpyJetV2.Game
-                        Id: 656ddec4-fb64-4a14-a247-27cf2cf8d08b
-                        character: ref!! 9f44c521-4f93-433e-89a2-b271ed9c447a
-                        input: !JumpyJetV2.Input.PlayerInput,JumpyJetV2.Game
-                            controller: ref!! 656ddec4-fb64-4a14-a247-27cf2cf8d08b
+                    2534bc812d9d3283823f972a90cc75d2: !JumpyJetV2.AIv2.AIController,JumpyJetV2.Game
+                        Id: 86065218-a864-4838-a057-2d0d49f53e5d
+                        CharacterPrefabUrl: 4a25830a-8aee-445d-a581-6353da4eead4:Character
+                        PipesScript: ref!! a3abb282-de05-4800-b279-e562372a4185
+                        UIScript: ref!! 00fd07e9-f2a1-4bc1-84bb-467e84daeb4a
         -   Entity:
                 Id: ab6a210f-cea3-4f03-8b5d-af95e4a4fb44
                 Name: BackgroundScript
@@ -130,64 +129,6 @@ Hierarchy:
                             CurrentFrame: 4
                         Color: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
         -   Entity:
-                Id: ca83ba5b-34d9-4a3a-87bd-fb02034551e1
-                Name: Character
-                Components:
-                    6109477720e5afed64e7efbefd3c3b35: !TransformComponent
-                        Id: 8918c9f5-1fad-4384-a5bd-2a43041537aa
-                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    849f7aeb57883b0ac89a2993066c1c68: !SpriteComponent
-                        Id: 62bfbf5c-9e27-4e09-ab9a-c28c36eca477
-                        SpriteProvider: !SpriteFromSheet
-                            Sheet: 7d98728e-a9ff-4d50-822b-cced08a38c6b:Sprites
-                        Color: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
-                    c12c7c2ac4ddd27190d3af682b977127: !JumpyJetV2.CharacterScript,JumpyJetV2.Game
-                        Id: 9f44c521-4f93-433e-89a2-b271ed9c447a
-                        CharacterId: 0
-                        Broadcast: true
-                    4aa384c6b79e6c244abb7f635051166c: !RigidbodyComponent
-                        Id: d323b34e-7558-4f81-aa30-227f200bf981
-                        CollisionGroup: CharacterFilter
-                        CanSleep: false
-                        Restitution: 0.0
-                        Friction: 0.5
-                        RollingFriction: 0.0
-                        CcdMotionThreshold: 0.0
-                        CcdSweptSphereRadius: 0.0
-                        IsTrigger: true
-                        IsKinematic: true
-                        Mass: 1.0
-                        LinearDamping: 0.0
-                        AngularDamping: 0.0
-                        OverrideGravity: false
-                        Gravity: {X: 0.0, Y: 0.0, Z: 0.0}
-                        NodeName: null
-                        ColliderShapes:
-                            b028aa3fca4e553f9db57024a85a66cc: !CapsuleColliderShapeDesc
-                                Is2D: true
-                                Length: 0.2
-                                LocalOffset: {X: -0.05, Y: 0.1, Z: 0.0}
-                                LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                            54f7272bfa2bbad97d6ff4ee4c9c1e98: !CapsuleColliderShapeDesc
-                                Length: 0.55
-                                Radius: 0.17
-                                Orientation: UpZ
-                                LocalOffset: {X: 0.15, Y: 0.0, Z: 0.0}
-                                LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                    e5416b0e8e83f190557acb6e8cd6488f: !JumpyJetV2.CharacterMovement,JumpyJetV2.Game
-                        Id: 6a127e99-a311-480c-b1ad-3440d852022f
-                        Enabled: false
-                    d3c28340c767d3d9a050142caa6e6271: !JumpyJetV2.CharacterAnimation,JumpyJetV2.Game
-                        Id: 42a3b9ae-c719-48e8-9d38-54a0a05c94fa
-                        Enabled: false
-            Base:
-                BasePartAsset: 4a25830a-8aee-445d-a581-6353da4eead4:Character
-                BasePartId: d8ae89d5-554f-4f3f-a5d4-f963fb1d3ac6
-                InstanceId: 0acae198-603e-4543-8d9e-e5790596c423
-        -   Entity:
                 Id: d87ce433-90b0-4819-8f55-9d08330b581d
                 Name: PipesScript
                 Components:
@@ -214,7 +155,7 @@ Hierarchy:
                         Id: 829f4a7b-b4cb-41f4-87af-bbca7326e6c2
                         Enabled: true
                         TextColor: {R: 144, G: 238, B: 144, A: 255}
-                        RefreshTime: 500.0
+                        RefreshTime: 200.0
                         SortingMode: ByTime
                         FilteringMode: Fps
                         ResultPage: 1

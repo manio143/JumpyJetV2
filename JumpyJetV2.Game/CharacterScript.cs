@@ -96,7 +96,6 @@ namespace JumpyJetV2
                 if (collision.ColliderA.CollisionGroup == CollisionFilterGroups.DefaultFilter ||
                     collision.ColliderB.CollisionGroup == CollisionFilterGroups.DefaultFilter)
                 {
-                    Debug.WriteLine("Character {0} died", CharacterId);
                     if(Broadcast)
                         GlobalEvents.CharacterDied.Broadcast();
                     await AnimateDeath();
