@@ -4,7 +4,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
-    <OutputType>WinExe</OutputType>
     <RootNamespace>JumpyJetV2.Linux</RootNamespace>
 
     <OutputPath>..\Bin\Linux\$(Configuration)\</OutputPath>

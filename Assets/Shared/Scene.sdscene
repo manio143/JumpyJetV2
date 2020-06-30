@@ -7,6 +7,7 @@ Offset: {X: 0.0, Y: 0.0, Z: 0.0}
 Hierarchy:
     RootParts:
         - ref!! 6ec17338-026d-4ad3-9615-4975281cf3ba
+        - ref!! ca83ba5b-34d9-4a3a-87bd-fb02034551e1
         - ref!! d87ce433-90b0-4819-8f55-9d08330b581d
         - ref!! ab6a210f-cea3-4f03-8b5d-af95e4a4fb44
         - ref!! 47550ad3-4887-4173-95e0-d98048465edd
@@ -14,7 +15,6 @@ Hierarchy:
         - ref!! b427e060-7a3f-4c75-8d59-ae5c0b969f04
         - ref!! 35327d32-178a-42c2-8fe6-ca59e512f922
         - ref!! fec5b722-b33b-429c-85eb-85a95803c0c7
-        - ref!! ca83ba5b-34d9-4a3a-87bd-fb02034551e1
     Parts:
         -   Folder: null
             Entity:
