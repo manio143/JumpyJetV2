@@ -101,7 +101,6 @@ namespace JumpyJetV2
                     await AnimateDeath();
                     if (Broadcast)
                         GlobalEvents.GameOver.Broadcast();
-                    isRunning = false;
                 }
             }
         }
@@ -112,7 +111,12 @@ namespace JumpyJetV2
             Animation.isDying = true;
             Movement.DieJump();
             while (!Movement.IsOutOfBounds())
+            {
+                if (!isDying)
+                    return;// break if reset!
                 await Script.NextFrame(); // wait for Jumpy to fall off screen
+            }
+            isRunning = false;
         }
 
         /// <summary>
