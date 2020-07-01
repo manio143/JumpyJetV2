@@ -6,13 +6,13 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SharpNeatLib" Version="2.4.1.5" />
-    <PackageReference Include="Stride.Core" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" />
-    <PackageReference Include="Stride.Core.Yaml" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" />
-    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" IncludeAssets="build" />
-    <PackageReference Include="Stride.Engine" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" />
-    <PackageReference Include="Stride.Particles" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" />
-    <PackageReference Include="Stride.Physics" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" />
-    <PackageReference Include="Stride.UI" Version="4.0.0.1-beta03-1036" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Core" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Core.Yaml" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" IncludeAssets="build" />
+    <PackageReference Include="Stride.Engine" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Particles" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.Physics" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
+    <PackageReference Include="Stride.UI" Version="4.0.0.1-beta04" PrivateAssets="contentfiles;analyzers" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DIExtensions\DIExtensions.csproj" />
