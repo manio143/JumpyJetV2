@@ -10,28 +10,9 @@ Hierarchy:
         - ref!! d87ce433-90b0-4819-8f55-9d08330b581d
         - ref!! ab6a210f-cea3-4f03-8b5d-af95e4a4fb44
         - ref!! 742fc053-f9ff-4f5b-8c49-3a291d8ac007
-        - ref!! b427e060-7a3f-4c75-8d59-ae5c0b969f04
-        - ref!! 35327d32-178a-42c2-8fe6-ca59e512f922
         - ref!! fec5b722-b33b-429c-85eb-85a95803c0c7
         - ref!! 47550ad3-4887-4173-95e0-d98048465edd
     Parts:
-        -   Folder: null
-            Entity:
-                Id: 35327d32-178a-42c2-8fe6-ca59e512f922
-                Name: LineLower
-                Components:
-                    447e24e13174f2eda49dcc11d0d75f8c: !TransformComponent
-                        Id: 9ca6c4a3-0ba6-4f10-a14c-03ab5cb80c1a
-                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    1f9a910e50520eb71aac779381ccbff1: !SpriteComponent
-                        Id: 05bd385f-c948-4357-ba78-b07e3e936323
-                        SpriteProvider: !SpriteFromSheet
-                            Sheet: 7d98728e-a9ff-4d50-822b-cced08a38c6b:Sprites
-                            CurrentFrame: 4
-                        Color: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
         -   Entity:
                 Id: 47550ad3-4887-4173-95e0-d98048465edd
                 Name: UI
@@ -59,7 +40,7 @@ Hierarchy:
                 Components:
                     a968da1afd5fae469f1cb0c4575cbaf2: !TransformComponent
                         Id: 1ada68a9-5ffd-46ae-9f1c-b0c4575cbaf2
-                        Position: {X: 0.0, Y: 0.0, Z: 200.0}
+                        Position: {X: 0.0, Y: 0.5, Z: 200.0}
                         Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
@@ -67,7 +48,6 @@ Hierarchy:
                         Id: 360f48ca-45bf-4b70-97ee-4d9531d642f6
                         Name: null
                         Projection: Orthographic
-                        OrthographicSize: 11.36
                         NearClipPlane: 1.0
                         AspectRatio: 0.56338
                         Slot: 3fdcf6a2-9504-426d-a9f6-d682e7cdac79
@@ -112,22 +92,6 @@ Hierarchy:
                             e59aa263f7270e7261d0777c0c351dd4: !StaticPlaneColliderShapeDesc
                                 Normal: {X: 0.0, Y: 1.0, Z: 0.0}
                                 Offset: 0.0
-        -   Entity:
-                Id: b427e060-7a3f-4c75-8d59-ae5c0b969f04
-                Name: LineUpper
-                Components:
-                    447e24e13174f2eda49dcc11d0d75f8c: !TransformComponent
-                        Id: fd8f05de-981f-42ec-aa50-1f6541a9757d
-                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
-                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
-                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
-                        Children: {}
-                    1f9a910e50520eb71aac779381ccbff1: !SpriteComponent
-                        Id: 3e49ee8e-78d3-4199-b1d4-6d19814ad4a0
-                        SpriteProvider: !SpriteFromSheet
-                            Sheet: 7d98728e-a9ff-4d50-822b-cced08a38c6b:Sprites
-                            CurrentFrame: 4
-                        Color: {R: 1.0, G: 1.0, B: 1.0, A: 1.0}
         -   Entity:
                 Id: d87ce433-90b0-4819-8f55-9d08330b581d
                 Name: PipesScript
