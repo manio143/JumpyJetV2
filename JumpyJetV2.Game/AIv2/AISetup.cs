@@ -1,15 +1,11 @@
-﻿using OpenTK.Graphics.ES20;
-using Stride.Core.Diagnostics;
+﻿using Stride.Core.Diagnostics;
 using Stride.Core.Mathematics;
 using Stride.Core.Serialization;
 using Stride.Engine;
 using Stride.Engine.Events;
 using Stride.Physics;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace JumpyJetV2.AIv2
@@ -45,7 +41,7 @@ namespace JumpyJetV2.AIv2
             
             neat = new NeuralNetworkEvolution();
             
-            generation = 1;
+            generation = 0;
             highscore = 0;
 
             root = new Entity("CharacterRoot");
@@ -78,10 +74,10 @@ namespace JumpyJetV2.AIv2
 
             dead = characterScripts.Select(_ => false).ToArray();
             score = 0;
-            generation = 1;
+            generation++;
 
-            //foreach (var physics in characterPhysics)
-            //    physics.Enabled = true;
+            foreach (var physics in characterPhysics)
+                physics.CanCollideWith = CollisionFilterGroupFlags.AllFilter;
         }
 
         public override async Task Execute()
@@ -116,7 +112,8 @@ namespace JumpyJetV2.AIv2
                     if (!character.isRunning || character.isDying)
                     {
                         dead[i] = true;
-                        //characterPhysics[i].Enabled = false;
+                        // disable collisions to save some processing time
+                        characterPhysics[i].CanCollideWith = (CollisionFilterGroupFlags)0;
                         neat.AddWithScore(ai[i], score);
                         continue;
                     }
